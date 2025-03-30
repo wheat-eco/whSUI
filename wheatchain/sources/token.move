@@ -7,13 +7,13 @@ use sui::object::{Self, UID};
 use sui::package;
 
 /// The whSUI token one-time witness
-struct TOKEN has drop {}
+public struct TOKEN has drop {}
 
 /// The whSUI token type
-public struct WHSUI has store {}
+public struct WHSUI has store, drop {}
 
 /// Initialize the whSUI token
-public fun init(otw: TOKEN, ctx: &mut TxContext) {
+fun init(otw: TOKEN, ctx: &mut TxContext) {
 let (treasury_cap, metadata) = coin::create_currency<WHSUI>(
   otw,
   9, // 9 decimals
