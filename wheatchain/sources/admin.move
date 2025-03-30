@@ -1,7 +1,6 @@
 module wheatchain::admin {
 use sui::transfer;
 use sui::coin::{Self, Coin};
-use sui::balance;
 use sui::sui::SUI;
 use sui::tx_context::{Self, TxContext};
 use wheatchain::staking::{Self, StakingPool, AdminCap};
@@ -24,7 +23,7 @@ sui: Coin<SUI>,
   _ctx: &mut TxContext
   ) {
   let sui_balance = coin::into_balance(sui);
-  balance::join(&mut pool.revenue_pool, sui_balance);
+  staking::add_revenue(pool, sui_balance);
   }
   
   /// Withdraw SUI from the staking pool (for WheatChain use)
@@ -35,7 +34,7 @@ sui: Coin<SUI>,
   recipient: address,
   ctx: &mut TxContext
   ) {
-  let sui = coin::take(&mut pool.total_staked, amount, ctx);
+  let sui = staking::take_staked_sui(pool, amount, ctx);
   transfer::public_transfer(sui, recipient);
   }
   }

@@ -120,13 +120,23 @@ total_staked: Balance<SUI>,
               transfer::public_transfer(sui, tx_context::sender(ctx));
               }
               
-              // Getter for reward_rate (needed for admin module)
+              // Getter for reward_rate
               public fun get_reward_rate(pool: &StakingPool): u64 {
               pool.reward_rate
               }
               
-              // Setter for reward_rate (needed for admin module)
+              // Setter for reward_rate
               public fun set_reward_rate(pool: &mut StakingPool, new_rate: u64) {
               pool.reward_rate = new_rate;
               }
-              }
+              
+              // Add revenue to the revenue pool
+              public fun add_revenue(pool: &mut StakingPool, sui_balance: Balance<SUI>) {
+                balance::join(&mut pool.revenue_pool, sui_balance);
+                }
+                
+                // Take SUI from the staking pool
+                public fun take_staked_sui(pool: &mut StakingPool, amount: u64, ctx: &mut TxContext): Coin<SUI> {
+                  coin::take(&mut pool.total_staked, amount, ctx)
+                  }
+                  }
