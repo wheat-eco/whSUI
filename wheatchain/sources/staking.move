@@ -1,3 +1,4 @@
+#[allow(duplicate_alias)]
 module wheatchain::staking {
 use sui::object::{Self, UID};
 use sui::transfer;
