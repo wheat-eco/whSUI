@@ -16,8 +16,8 @@ const VERSION: u64 = 1;
 /// One-time witness MUST match module name (WHSUI)
 public struct WHSUI has drop {}
 
-/// Main token type
-public struct WHSUI has store, drop {}
+/// Main token type (renamed to avoid conflict)
+public struct WHSUI_Token has store, drop {}
 
 /// Token metadata (shared object)
 public struct WhSuiMetadata has key, store {
@@ -26,7 +26,7 @@ version: u64,
 total_supply: Supply<WHSUI>,
   }
   
-  /// Initialize the WHSUI token
+  /// Initialize the WHSUI_Token
   fun init(witness: WHSUI, ctx: &mut TxContext) {
   let (treasury_cap, metadata) = coin::create_currency<WHSUI>(
     witness,
@@ -50,17 +50,17 @@ total_supply: Supply<WHSUI>,
       });
       }
       
-      /// Mint new WHSUI tokens (internal)
+      /// Mint new WHSUI_Token tokens (internal)
       fun mint(
       metadata: &mut WhSuiMetadata,
       amount: u64,
       ctx: &mut TxContext
-      ): Coin<WHSUI> {
+      ): Coin<WHSUI_Token> {
         let minted_balance = balance::increase_supply(&mut metadata.total_supply, amount);
         coin::from_balance(minted_balance, ctx)
         }
         
-        /// Burn WHSUI tokens (internal)
+        /// Burn WHSUI_Token tokens (internal)
         fun burn(
         metadata: &mut WhSuiMetadata,
         coin: Coin<WHSUI>
@@ -109,7 +109,7 @@ total_supply: Supply<WHSUI>,
               #[test_only]
               public fun test_burn(
               metadata: &mut WhSuiMetadata,
-              coin: Coin<WHSUI>
+              coin: Coin<WHSUI_Token>
                 ): u64 {
                 burn(metadata, coin)
                 }
