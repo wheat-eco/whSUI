@@ -1,18 +1,19 @@
 module wheatchain::token {
-use sui::coin::{Self, Coin, TreasuryCap, CoinMetadata};
+use sui::coin::{Self, Coin, TreasuryCap};
 use sui::transfer;
 use sui::tx_context::{Self, TxContext};
 use std::option;
+use sui::object::{Self, UID};
 use sui::package;
 
 /// The whSUI token one-time witness
 struct TOKEN has drop {}
 
 /// The whSUI token type
-public struct WHSUI has drop {}
+public struct WHSUI has store {}
 
 /// Initialize the whSUI token
-fun init(otw: TOKEN, ctx: &mut TxContext) {
+public fun init(otw: TOKEN, ctx: &mut TxContext) {
 let (treasury_cap, metadata) = coin::create_currency<WHSUI>(
   otw,
   9, // 9 decimals
