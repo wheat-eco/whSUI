@@ -10,11 +10,11 @@ use sui::tx_context::{Self, TxContext};
 use sui::object::{Self, UID};
 use sui::event;
 
-// Current module version
+/// Current module version
 const VERSION: u64 = 1;
 
-/// One-time witness MUST match module name (whsui)
-public struct whsui has drop {}
+/// One-time witness MUST match module name (Whsui)
+public struct Whsui has drop {}
 
 /// Main token type
 public struct WHSUI has store, drop {}
@@ -27,7 +27,7 @@ total_supply: Supply<WHSUI>,
   }
   
   /// Initialize the WHSUI token
-  fun init(witness: whsui, ctx: &mut TxContext) {
+  fun init(witness: Whsui, ctx: &mut TxContext) {
   let (treasury_cap, metadata) = coin::create_currency<WHSUI>(
     witness,
     9, // 9 decimals
@@ -94,7 +94,7 @@ total_supply: Supply<WHSUI>,
             // ===== Testing Functions ===== //
             #[test_only]
             public fun test_init(ctx: &mut TxContext) {
-            init(whsui {}, ctx)
+            init(Whsui {}, ctx)
             }
             
             #[test_only]
