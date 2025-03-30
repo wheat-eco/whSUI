@@ -13,22 +13,22 @@ use sui::event;
 /// Current module version
 const VERSION: u64 = 1;
 
-/// One-time witness MUST match module name (whsui)
+/// One-time witness MUST match module name (WHSUI)
 public struct WHSUI has drop {}
 
 /// Main token type
-public struct WHSUI_Token has store, drop {}
+public struct WHSUI has store, drop {}
 
 /// Token metadata (shared object)
 public struct WhSuiMetadata has key, store {
 id: UID,
 version: u64,
-total_supply: Supply<WHSUI_Token>,
+total_supply: Supply<WHSUI>,
   }
   
   /// Initialize the WHSUI token
   fun init(witness: WHSUI, ctx: &mut TxContext) {
-  let (treasury_cap, metadata) = coin::create_currency<WHSUI_Token>(
+  let (treasury_cap, metadata) = coin::create_currency<WHSUI>(
     witness,
     9, // 9 decimals
     b"whSUI", // Symbol
@@ -55,7 +55,7 @@ total_supply: Supply<WHSUI_Token>,
       metadata: &mut WhSuiMetadata,
       amount: u64,
       ctx: &mut TxContext
-      ): Coin<WHSUI_Token> {
+      ): Coin<WHSUI> {
         let minted_balance = balance::increase_supply(&mut metadata.total_supply, amount);
         coin::from_balance(minted_balance, ctx)
         }
@@ -63,7 +63,7 @@ total_supply: Supply<WHSUI_Token>,
         /// Burn WHSUI tokens (internal)
         fun burn(
         metadata: &mut WhSuiMetadata,
-        coin: Coin<WHSUI_Token>
+        coin: Coin<WHSUI>
           ): u64 {
           balance::decrease_supply(&mut metadata.total_supply, coin::into_balance(coin))
           }
@@ -81,7 +81,7 @@ total_supply: Supply<WHSUI_Token>,
           /// Entry: Burn tokens from user
           public entry fun burn_tokens(
           metadata: &mut WhSuiMetadata,
-          coin: Coin<WHSUI_Token>
+          coin: Coin<WHSUI>
             ) {
             burn(metadata, coin);
             }
@@ -102,14 +102,14 @@ total_supply: Supply<WHSUI_Token>,
             metadata: &mut WhSuiMetadata,
             amount: u64,
             ctx: &mut TxContext
-            ): Coin<WHSUI_Token> {
+            ): Coin<WHSUI> {
               mint(metadata, amount, ctx)
               }
               
               #[test_only]
               public fun test_burn(
               metadata: &mut WhSuiMetadata,
-              coin: Coin<WHSUI_Token>
+              coin: Coin<WHSUI>
                 ): u64 {
                 burn(metadata, coin)
                 }
