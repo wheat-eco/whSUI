@@ -11,11 +11,8 @@ use sui::event;
 // Track the current version of the module
 const VERSION: u64 = 1;
 
-/// The whSUI token one-time witness
-public struct TOKEN has drop {}
-
-/// The whSUI token type
-public struct WHSUI has store, drop {}
+/// The whSUI token one-time witness (must have same name as module)
+public struct WHSUI has drop {}
 
 /// Changeable metadata of whSUI token
 public struct TokenMetadata has key, store {
@@ -25,7 +22,7 @@ total_supply: Supply<WHSUI>,
   }
   
   /// Initialize the whSUI token
-  fun init(witness: TOKEN, ctx: &mut TxContext) {
+  fun init(witness: WHSUI, ctx: &mut TxContext) {
   // Create coin with metadata
   let (treasury_cap, metadata) = coin::create_currency<WHSUI>(
     witness,
@@ -37,11 +34,10 @@ total_supply: Supply<WHSUI>,
       ctx
       );
       
-      // Freeze the metadata so it can't be changed
+      // Freeze the metadata and share supply information
       transfer::public_freeze_object(metadata);
-      
-      // Convert treasury cap to supply and store in our custom metadata
       let supply = coin::treasury_into_supply(treasury_cap);
+      
       transfer::share_object(TokenMetadata {
       id: object::new(ctx),
       version: VERSION,
@@ -59,8 +55,8 @@ total_supply: Supply<WHSUI>,
         balance::supply_value(&metadata.total_supply)
         }
         
-        /// Mint new whSUI tokens (admin function)
-        public fun mint(
+        /// Internal mint function
+        fun mint(
         metadata: &mut TokenMetadata,
         amount: u64,
         ctx: &mut TxContext
@@ -69,16 +65,16 @@ total_supply: Supply<WHSUI>,
           coin::from_balance(minted_balance, ctx)
           }
           
-          /// Burn whSUI tokens
-          public fun burn(
+          /// Internal burn function
+          fun burn(
           metadata: &mut TokenMetadata,
           coin: Coin<WHSUI>
             ): u64 {
             balance::decrease_supply(&mut metadata.total_supply, coin::into_balance(coin))
             }
             
-            /// Entry function for minting
-            public entry fun mint_entry(
+            /// Entry function for minting whSUI tokens
+            public entry fun mint_tokens(
             metadata: &mut TokenMetadata,
             amount: u64,
             recipient: address,
@@ -88,17 +84,37 @@ total_supply: Supply<WHSUI>,
             transfer::public_transfer(coin, recipient);
             }
             
-            /// Entry function for burning
-            public entry fun burn_entry(
+            /// Entry function for burning whSUI tokens
+            public entry fun burn_tokens(
             metadata: &mut TokenMetadata,
             coin: Coin<WHSUI>
               ) {
               burn(metadata, coin);
               }
               
+              // ========== Testing Functions ========== //
               #[test_only]
               /// Wrapper of module initializer for testing
               public fun test_init(ctx: &mut TxContext) {
-              init(TOKEN {}, ctx)
+              init(WHSUI {}, ctx)
               }
-              }
+              
+              #[test_only]
+              /// Test mint helper function
+              public fun test_mint(
+              metadata: &mut TokenMetadata,
+              amount: u64,
+              ctx: &mut TxContext
+              ): Coin<WHSUI> {
+                mint(metadata, amount, ctx)
+                }
+                
+                #[test_only]
+                /// Test burn helper function
+                public fun test_burn(
+                metadata: &mut TokenMetadata,
+                coin: Coin<WHSUI>
+                  ): u64 {
+                  burn(metadata, coin)
+                  }
+                  }
