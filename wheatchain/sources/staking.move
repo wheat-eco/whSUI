@@ -6,7 +6,7 @@ use sui::coin::{Self, Coin, TreasuryCap};
 use sui::balance::{Self, Balance};
 use sui::sui::SUI;
 use sui::tx_context::{Self, TxContext};
-use wheatchain::token::WHSUI;
+use wheatchain::whsui::WHSUI;
 use wheatchain::events;
 
 /// The staking pool holding SUI and revenue
