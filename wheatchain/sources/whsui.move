@@ -55,7 +55,7 @@ total_supply: Supply<WHSUI>,
       metadata: &mut WhSuiMetadata,
       amount: u64,
       ctx: &mut TxContext
-      ): Coin<WHSUI_Token> {
+      ): Coin<WHSUI> {
         let minted_balance = balance::increase_supply(&mut metadata.total_supply, amount);
         coin::from_balance(minted_balance, ctx)
         }
