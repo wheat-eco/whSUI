@@ -1,4 +1,4 @@
-module wheatchain::marketplace {
+module nft::marketplace {
     use std::string::{Self, String};
     use sui::object::{Self, ID, UID};
     use sui::event;
