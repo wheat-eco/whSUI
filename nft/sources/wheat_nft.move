@@ -1,4 +1,4 @@
-module wheatchain::wheat_nft {
+module nft::wheat_nft {
     use std::string::{Self, String};
     use std::vector;
     use sui::url::{Self, Url};
